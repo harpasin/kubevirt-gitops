@@ -1,0 +1,62 @@
+apiVersion: kubevirt.io/v1
+kind: VirtualMachine
+metadata:
+  annotations:
+    kubevirt.io/latest-observed-api-version: v1
+    kubevirt.io/storage-observed-api-version: v1
+  name: fedora-gitops
+  namespace: openshift-cnv
+  finalizers:
+    - kubevirt.io/virtualMachineControllerFinalize
+spec:
+  dataVolumeTemplates:
+    - metadata:
+        name: fedora-gitops-volume
+      spec:
+        sourceRef:
+          kind: DataSource
+          name: fedora
+          namespace: openshift-virtualization-os-images
+        storage:
+          resources:
+            requests:
+              storage: '34087042032'
+          storageClassName: nfs-storage
+  instancetype:
+    kind: virtualmachineclusterinstancetype
+    name: u1.medium
+  preference:
+    kind: virtualmachineclusterpreference
+    name: fedora
+  runStrategy: Always
+  template:
+    metadata:
+      labels:
+        network.kubevirt.io/headlessService: headless
+    spec:
+      architecture: amd64
+      domain:
+        devices:
+          autoattachPodInterface: false
+          interfaces:
+            - masquerade: {}
+              name: default
+        machine:
+          type: pc-q35-rhel9.4.0
+        resources: {}
+      networks:
+        - name: default
+          pod: {}
+      subdomain: headless
+      volumes:
+        - dataVolume:
+            name: fedora-gitops-volume
+          name: rootdisk
+        - cloudInitNoCloud:
+            userData: |
+              #cloud-config
+              chpasswd:
+                expire: false
+              password: redhat
+              user: fedora
+          name: cloudinitdisk
