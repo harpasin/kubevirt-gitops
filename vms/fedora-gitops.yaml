@@ -1,17 +1,11 @@
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  annotations:
-    kubevirt.io/latest-observed-api-version: v1
-    kubevirt.io/storage-observed-api-version: v1
   name: fedora-gitops
   namespace: openshift-cnv
-  finalizers:
-    - kubevirt.io/virtualMachineControllerFinalize
 spec:
   dataVolumeTemplates:
     - metadata:
-        creationTimestamp: null
         name: fedora-gitops-volume
       spec:
         sourceRef:
@@ -24,30 +18,22 @@ spec:
               storage: '34087042032'
           storageClassName: nfs-storage
   instancetype:
-    kind: virtualmachineclusterinstancetype
     name: u1.medium
-    revisionName: fedora-gitops-u1.medium-v1beta1-5e9711b8-c8cf-425e-99cf-a41416752b9a-1
   preference:
-    kind: virtualmachineclusterpreference
     name: fedora
-    revisionName: fedora-gitops-fedora-v1beta1-6e1d3a24-266f-4676-9942-4b58476d1bca-1
   runStrategy: Always
   template:
     metadata:
-      creationTimestamp: null
       labels:
         network.kubevirt.io/headlessService: headless
     spec:
-      architecture: amd64
       domain:
         devices:
           autoattachPodInterface: false
+          disks: []
           interfaces:
             - masquerade: {}
               name: default
-        machine:
-          type: pc-q35-rhel9.4.0
-        resources: {}
       networks:
         - name: default
           pod: {}
