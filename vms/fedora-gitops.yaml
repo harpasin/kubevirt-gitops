@@ -11,6 +11,7 @@ metadata:
 spec:
   dataVolumeTemplates:
     - metadata:
+        creationTimestamp: null
         name: fedora-gitops-volume
       spec:
         sourceRef:
@@ -25,12 +26,15 @@ spec:
   instancetype:
     kind: virtualmachineclusterinstancetype
     name: u1.medium
+    revisionName: fedora-gitops-u1.medium-v1beta1-5e9711b8-c8cf-425e-99cf-a41416752b9a-1
   preference:
     kind: virtualmachineclusterpreference
     name: fedora
+    revisionName: fedora-gitops-fedora-v1beta1-6e1d3a24-266f-4676-9942-4b58476d1bca-1
   runStrategy: Always
   template:
     metadata:
+      creationTimestamp: null
       labels:
         network.kubevirt.io/headlessService: headless
     spec:
